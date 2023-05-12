@@ -226,9 +226,9 @@ def main():
     vectorQuest = readVectorQuest()
     vectorDict = readDictQuest()
 
-    # for cabeçalho in microdadoCabeçalhos:
-    #     if cabeçalho['nome'] not in diretorioAtual:
-    #         downloadAndExtractZip('https://download.inep.gov.br/microdados/' + cabeçalho['nome'] + '.zip', cabeçalho['nome'])
+    for cabeçalho in microdadoCabeçalhos:
+        if cabeçalho['nome'] not in diretorioAtual:
+            downloadAndExtractZip('https://download.inep.gov.br/microdados/' + cabeçalho['nome'] + '.zip', cabeçalho['nome'])
 
     co_grupo = int(input("Digite o código do grupo desejado: "))
 
