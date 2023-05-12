@@ -1,0 +1,12 @@
+NUMERO;NOME_TIPO;SIGLA
+1;Algoritmos, Estrutura de Dados e Programação;(AEDP)
+2;Arquitetura de Computadores e Circuitos Digitais;(ACCD)
+3;Banco de Dados;(BD)
+4;Computação Gráfica e Processamento de Imagem;(CGPI)
+5;Engenharia de Software;(ES)
+6;Ética, Computador e Sociedade;(ECS)
+7;Inteligência Artificial;(IA)
+8;Linguagens Formais e Autômatos, Compiladores e Computabilidade;(LFACC)
+9;Lógica Matemática, Matemática Discreta, Estatística e Grafos;(LMMDEG)
+10;Redes de Computadores, Sistemas Distribuídos e Telecomunicações;(RCSDT)
+11;Sistemas Operacionais;(SO)

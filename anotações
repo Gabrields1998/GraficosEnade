@@ -1,0 +1,86 @@
+mapear os arquivos por questão
+excluir as colunas que não vou utilizar
+no artigo de 2018 tem uma estrutura, tentar entender ela (favoritos)
+
+colocar para a pessoa escolher o unico grupo que quer trabalhar e para quais anos
+
+IMPORTANTE: Aprender a usar o PANDAS para ler arquivos .csv e o MATPLOTLIB para gerar graficos
+
+coisas que eu preciso separar de cada arquivo:
+
+arq 1:
+    - NU_ANO
+
+    - CO_CURSO (codigo do curso de ciencia da computação em campo mourão 1164656)
+    Código	Modalidade	Grau	    Curso	                UF	 Município	 ENADE	CPC	CC	IDD	
+    1164656	Presencial	Bacharelado	CIÊNCIA DA COMPUTAÇÃO	PR	 Campo Mourão	3	4	4	3	
+    1152636	Presencial	Bacharelado	CIÊNCIA DA COMPUTAÇÃO	PR	 Medianeira	    3	4	4	3	
+    1102800	Presencial	Bacharelado	CIÊNCIA DA COMPUTAÇÃO	PR	 Ponta Grossa	3	4	4	3	
+    1270472	Presencial	Bacharelado	CIÊNCIA DA COMPUTAÇÃO	PR	 Santa Helena	3	4	5	4	
+
+    - CO_GRUPO (4004 cienci comp, quimica .....)
+
+    IMPORTANTE: para saber qual o codigo de grupo, eu procuro no ar1 por ele, 
+    e a partir do resultado eu pego seus cod_curso e procuro no arq3
+
+arq3:
+
+    - NU_ANO
+    - CO_CURSO (da pra saber o cod_grupo)
+
+    IMPORTANTE: Deixar, mas talvez não use
+        - NU_ITEM_OFG	NU_ITEM_OFG_Z	NU_ITEM_OFG_X	NU_ITEM_OFG_N	(formação geral)
+        - NU_ITEM_OCE	NU_ITEM_OCE_Z	NU_ITEM_OCE_X	NU_ITEM_OCE_N   (componente especifico)
+    
+    - DS_VT_GAB_OFG_FIN ( gabarito da formação geral)
+    - DS_VT_ESC_OFG (escolha da resposta questão de formação geral)
+    - DS_VT_ACE_OFG (acertos da parte de formação geral)
+
+    - DS_VT_GAB_OCE_FIN (gabarito da parte dos componentes especificos)
+    - DS_VT_ESC_OCE (escolha de resposta dos componentes especificos)
+    - DS_VT_ACE_OCE (acertos dos componentes especificos)
+    
+    IMPORTANTE: checar pelos dois campos TP_PRES e TP_PR_GER
+    - TP_PRES (se estava presente no dia da prova) 
+    - TP_PR_GER (se fez a prova ou não) 
+    - TP_PR_OB_FG (se fez a parte objetiva da formação geral)
+    - TP_PR_DI_FG (se fez a parte discursiva da formação geral)
+
+    IMPORTANTE: quando for conferir isto, caso a pessoa tenha deixado 
+    em branco a formação geral e feito o especifico, mesmo assim considerar 
+    este cara, pois nossa prioridade é o componente especifico
+    - TP_PR_OB_CE (se fez a parte objetiva do componente especifico)
+    - TP_PR_DI_CE (se fez a parte discursiva do componenete especifico)
+
+11 tipos de disciplina possiveis:
+    - 1) Algoritmos, Estrutura de Dados e Programação (AEDP)
+    - 2) Arquitetura de Computadores e Circuitos Digitais (ACCD)
+    - 3) Banco de Dados (BD)
+    - 4) Computação Gráfica e Processamento de Imagem (CGPI)
+    - 5) Engenharia de Software (ES)
+    - 6) Ética, Computador e Sociedade (ECS)
+    - 7) Inteligência Artificial (IA)
+    - 8) Linguagens Formais e Autômatos, Compiladores e Computabilidade (LFACC)
+    - 9) Lógica Matemática, Matemática Discreta, Estatística e Grafos (LMMDEG)
+    - 10) Redes de Computadores, Sistemas Distribuídos e Telecomunicações (RCSDT)
+    - 11) Sistemas Operacionais (SO)
+
+    data_dict = {
+    1: 'Algoritmos, Estrutura de Dados e Programação (AEDP)',
+    2: 'Arquitetura de Computadores e Circuitos Digitais (ACCD)',
+    3: 'Banco de Dados (BD)',
+    4: 'Computação Gráfica e Processamento de Imagem (CGPI)',
+    5: 'Engenharia de Software (ES)',
+    6: 'Ética, Computador e Sociedade (ECS)',
+    7: 'Inteligência Artificial (IA)',
+    8: 'Linguagens Formais e Autômatos, Compiladores e Computabilidade (LFACC)',
+    9: 'Lógica Matemática, Matemática Discreta, Estatística e Grafos (LMMDEG)',
+    10: 'Redes de Computadores, Sistemas Distribuídos e Telecomunicações (RCSDT)',
+    11: 'Sistemas Operacionais (SO)'
+    }
+
+vetor com disciplinas na ordem da prova da 9 a 35 (o que eu acho) parte objetiva do componente especifico:
+    vetor [11, 1, 7, 6 ou segurança, 5, 2, 5, 2 ou 9, 11, 7, 5, 1, 10, 3, 1, 10 ou segurança, 11 ou 10, 5 ou interação homem computador, 9, 11, 4, 8, 8, 1, 9, 9, 10]
+
+vetor com disciplinas na ordem da prova da 9 a 35 (o que estou utilizando) parte objetiva do componente especifico:
+    vetor [11, 1, 7, 6, 5, 2, 5, 2, 11, 7, 5, 1, 10, 3, 1, 10, 11, 5, 9, 11, 4, 8, 8, 1, 9, 9, 10]
