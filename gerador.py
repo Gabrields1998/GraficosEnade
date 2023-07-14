@@ -60,9 +60,9 @@ def accessCSVFiles(fileName: str, ano: int, co_grupo: int):
 
     # Entra na pasta DADOS dentro da pasta microdados_enade
     path = os.getcwd() 
-    os.chdir(path + '\\' + fileName)
+    os.chdir(path + '/' + fileName)
     lista_arquivos = os.listdir() 
-    data_path = path + '\\' + fileName + '\\' + lista_arquivos[1]
+    data_path = path + '/' + fileName + '/' + lista_arquivos[1]
     os.chdir(data_path)
 
     # Abrindo o arquivo de entrada como CSV e lendo para o Pandas
@@ -165,7 +165,7 @@ def quantidadeTema(questoes, dicionario):
             ax.bar_label(barh, fmt='{:,.0f}')
 
         ax.set_title(str(quest['ano']))
-        plt.savefig(os.getcwd() + '\\GraficosQuantidade\\' + str(quest['ano']))
+        plt.savefig(os.getcwd() + '/GraficosQuantidade/' + str(quest['ano']))
 
     fig, ax = plt.subplots(figsize=(8,5))
     fig.suptitle("Gráfico da Quantidade questões por tema")
@@ -179,7 +179,7 @@ def quantidadeTema(questoes, dicionario):
         ax.bar_label(barh, fmt='{:,.0f}')
     ax.set_title('Total')
 
-    plt.savefig(os.getcwd() + '\\GraficosQuantidade\\' + str('Total'))
+    plt.savefig(os.getcwd() + '/GraficosQuantidade/' + str('Total'))
     
     fig, ax = plt.subplots(figsize=(8,5))
     fig.suptitle("Percentual total de questões por tema")
@@ -191,7 +191,7 @@ def quantidadeTema(questoes, dicionario):
         bar = ax.bar(disciplinas_sigla[i], (qtd_por_tema_total[i]/qtde_total)*100, color = 'tab:blue')
         ax.bar_label(bar, fmt='{:,.0f}%')
 
-    plt.savefig(os.getcwd() + '\\GraficosQuantidade\\' + 'TotalPorcentagem')
+    plt.savefig(os.getcwd() + '/GraficosQuantidade/' + 'TotalPorcentagem')
 
 def percentualAcertos(vectorQuest, vectorDict, filename, ano: int):
     category_names = ['Acertos', 'Erros']
@@ -243,7 +243,7 @@ def percentualAcertos(vectorQuest, vectorDict, filename, ano: int):
     ax.legend(ncols=len(category_names), bbox_to_anchor=(0, 1),
               loc='lower left', fontsize='small')
     
-    plt.savefig(os.getcwd() + '\\GraficosPercentualAcertos\\' + str(ano))
+    plt.savefig(os.getcwd() + '/GraficosPercentualAcertos/' + str(ano))
 
 def indiceFacilidade(vectorQuest, filename, ano: int):
     vet_resultado = getVetAcertos(vectorQuest, filename, ano)
@@ -291,7 +291,7 @@ def indiceFacilidade(vectorQuest, filename, ano: int):
         bar = ax.bar(atributo, valor, color = 'tab:blue')
         ax.bar_label(bar, fmt='{:,.0f}')
 
-    plt.savefig(os.getcwd() + '\\GraficosFacilidade\\' + str(ano))
+    plt.savefig(os.getcwd() + '/GraficosFacilidade/' + str(ano))
     
     return facilidade, results
 
@@ -340,7 +340,7 @@ def facilidadePercentual(totalAcertos, vectorDict):
             i+=1
         ax.set_title(sigla)
 
-        plt.savefig(os.getcwd() + '\\GraficosFacilidadePercentual\\' + sigla)
+        plt.savefig(os.getcwd() + '/GraficosFacilidadePercentual/' + sigla)
 
     
     i = 0
@@ -361,7 +361,7 @@ def facilidadePercentual(totalAcertos, vectorDict):
         i+=1
         ax.set_title(facilidadeParcial)
 
-        plt.savefig(os.getcwd() + '\\GraficosFacilidadePercentual\\' + facilidadeParcial)
+        plt.savefig(os.getcwd() + '/GraficosFacilidadePercentual/' + facilidadeParcial)
 
 def indiceDiscriminacao(vectorQuest, filename, ano: int):
     arq_filtrado = pd.read_csv(filename)
@@ -434,7 +434,7 @@ def indiceDiscriminacao(vectorQuest, filename, ano: int):
         bar = ax.bar(atributo, valor, color = 'tab:blue')
         ax.bar_label(bar, fmt='{:,.0f}')
 
-    plt.savefig(os.getcwd() + '\\GraficosDiscriminacao\\' + str(ano))
+    plt.savefig(os.getcwd() + '/GraficosDiscriminacao/' + str(ano))
 
     return discriminacao, vet_ponto_bisserial
 
@@ -480,7 +480,7 @@ def discriminacaoPercentual(totalDiscriminacao, vectorDict):
             i+=1
         ax.set_title(sigla)
 
-        plt.savefig(os.getcwd() + '\\GraficosDiscriminacaoPercentual\\' + sigla)
+        plt.savefig(os.getcwd() + '/GraficosDiscriminacaoPercentual/' + sigla)
     
     i = 0
     for discriminacaoParcial, num in discriminacao.items():
@@ -500,7 +500,7 @@ def discriminacaoPercentual(totalDiscriminacao, vectorDict):
         i+=1
         ax.set_title(discriminacaoParcial)
 
-        plt.savefig(os.getcwd() + '\\GraficosDiscriminacaoPercentual\\' + discriminacaoParcial)
+        plt.savefig(os.getcwd() + '/GraficosDiscriminacaoPercentual/' + discriminacaoParcial)
 
 def tabelaMediaDP(vectorQuest, filename):
 
@@ -511,7 +511,7 @@ def tabelaMediaDP(vectorQuest, filename):
         anos.append(quest['ano'])
 
     path = os.getcwd() 
-    os.chdir(path + '\\Tabelas')
+    os.chdir(path + '/Tabelas')
 
     medias = []
     desvioPadrao = []
@@ -553,13 +553,14 @@ def main():
         {'nome': 'microdados_enade_2013_LGPD', 'ano': 2013}, 
         {'nome': 'microdados_enade_2012_LGPD', 'ano': 2012},
         {'nome': 'microdados_enade_2011', 'ano': 2011}, 
-        {'nome': 'microdados_enade_2010', 'ano': 2010}, 
-        {'nome': 'microdados_enade_2009', 'ano': 2009}, 
+        {'nome': 'microdados_enade_2010', 'ano': 2010}]
+    
+    '''{'nome': 'microdados_enade_2009', 'ano': 2009}
         {'nome': 'microdados_enade_2008', 'ano': 2008}, 
         {'nome': 'microdados_enade_2007', 'ano': 2007}, 
         {'nome': 'microdados_enade_2006', 'ano': 2006}, 
         {'nome': 'microdados_enade_2005', 'ano': 2005}, 
-        {'nome': 'microdados_enade_2004', 'ano': 2004}]
+        {'nome': 'microdados_enade_2004', 'ano': 2004}]'''
 
     diretorioAtual = os.listdir()
 
@@ -583,8 +584,8 @@ def main():
     pre processamento dos microdados para que o sistema funcione corretamente para anos que não seguem
     o padrão instituido pelo enade (neste caso referente a BCC)
     """
-    ppBCC.processa_BCC_2008()
-    ppBCC.processa_BCC_2005()
+    #ppBCC.processa_BCC_2008()
+    #ppBCC.processa_BCC_2005()
 
     """
     FILTRAGEM
@@ -643,7 +644,7 @@ def main():
         bar = ax.bar(atributo, valor, color = 'tab:blue')
         ax.bar_label(bar, fmt='{:,.0f}')
 
-    plt.savefig(os.getcwd() + '\\GraficosFacilidade\\Total')
+    plt.savefig(os.getcwd() + '/GraficosFacilidade/Total')
 
     """
     GRAFICOS DE DISCRIMINAÇÃO
@@ -674,7 +675,7 @@ def main():
         bar = ax.bar(atributo, valor, color = 'tab:blue')
         ax.bar_label(bar, fmt='{:,.0f}')
 
-    plt.savefig(os.getcwd() + '\\GraficosDiscriminacao\\Total')
+    plt.savefig(os.getcwd() + '/GraficosDiscriminacao/Total')
     
     """
     TABELAS DESCRITIVAS
