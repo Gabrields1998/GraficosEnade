@@ -1,2 +1,8 @@
-# GraficosEnade
-Projeto que gera graficos a partir dos microdados fornecidos pelo Enade.
+# LEIA-ME
+
+### Bibliotecas utilizadas no Python:
+
+- pandas
+- numpy
+- matplotlib
+- py7zr

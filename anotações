@@ -1,3 +1,16 @@
+----- ANOTAÇÕES DO JULIANO -----
+
+
+
+1 - conferir problema com o ZIP dos anos < 2010 #! CONSERTADO AO UTILIZAR A LIB py7zr
+2 - organizar graficos gerados anteriormente #! Feito!
+3 - gerar novos graficos #! ...?
+
+
+----- ANOTAÇÕES DO GABRIEL -----
+
+Antes de criar os gráficos, criar as pastas referentes a eles
+
 mapear os arquivos por questão
 excluir as colunas que não vou utilizar
 no artigo de 2018 tem uma estrutura, tentar entender ela (favoritos)
