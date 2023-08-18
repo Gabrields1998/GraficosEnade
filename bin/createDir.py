@@ -1,4 +1,5 @@
 import os
+import shutil
 
 
 # Apaga todas as pastas com os gráficos processados
@@ -10,7 +11,7 @@ def graphicsDir():
                     'GraficosFacilidadePercentual', 'GraficosPercentualAcertos', 'GraficosQuantidade', ]
 
     if os.path.exists('graphics'):
-        os.system('rm -rf graphics')
+        shutil.rmtree(r'graphics')
         os.mkdir('graphics')
     else:
         os.mkdir('graphics')
@@ -21,7 +22,7 @@ def graphicsDir():
 def tablesDir():
 
     if os.path.exists('tables'):
-        os.system('rm -rf tables')
+        shutil.rmtree(r'tables')
         os.mkdir('tables')
     else:
         os.mkdir('tables')
