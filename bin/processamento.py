@@ -2,9 +2,10 @@ import os
 import pandas as pd
 import matplotlib.pyplot as plt
 import numpy as np
+import csv
 
 
-class processamentoGraficos:
+class ProcessamentoGraficos:
     def getVetAcertos(vectorQuest, filename, ano):
         arq_filtrado = pd.read_csv(filename)
 
@@ -37,7 +38,7 @@ class processamentoGraficos:
         return vet_resultado
 
 
-    def quantidadeTema(questoes, dicionario):
+    def quantidadeTema(questoes, dicionario, save_path):
         quantidade_disciplinas = len(dicionario)
 
         disciplinas_sigla = []
@@ -62,7 +63,8 @@ class processamentoGraficos:
                 ax.bar_label(barh, fmt='{:,.0f}')
 
             ax.set_title(str(quest['ano']))
-            plt.savefig(os.getcwd() + '/graphics/GraficosQuantidade/' + str(quest['ano']))
+            plt.savefig(save_path)
+            plt.close()
 
         fig, ax = plt.subplots(figsize=(8, 5))
         fig.suptitle("Gráfico da Quantidade questões por tema")
@@ -76,7 +78,8 @@ class processamentoGraficos:
             ax.bar_label(barh, fmt='{:,.0f}')
         ax.set_title('Total')
 
-        plt.savefig(os.getcwd() + '/graphics/GraficosQuantidade/' + str('Total'))
+        plt.savefig(save_path + str('Total'))
+        plt.close()
 
         fig, ax = plt.subplots(figsize=(8, 5))
         fig.suptitle("Percentual total de questões por tema")
@@ -88,13 +91,25 @@ class processamentoGraficos:
             bar = ax.bar(disciplinas_sigla[i], (qtd_por_tema_total[i] / qtde_total) * 100, color='tab:blue')
             ax.bar_label(bar, fmt='{:,.0f}%')
 
-        plt.savefig(os.getcwd() + '/graphics/GraficosQuantidade/' + 'TotalPorcentagem')
+        with open(file='dadosGraficos/qtdTema.csv', mode='w') as file:
+            for column in disciplinas_sigla:
+                file.write(column + ';')
+
+            file.writelines('\n')
+
+            for disc in qtd_por_tema_total:
+                file.write(str(disc) + ';')
+
+            file.close()
+
+        plt.savefig(save_path + 'TotalPorcentagem')
+        plt.close()
 
 
-    def percentualAcertos(vectorQuest, vectorDict, filename, ano: int):
+    def percentualAcertos(vectorQuest, vectorDict, filename, ano: int, save_path):
         category_names = ['Acertos', 'Erros']
 
-        vet_resultado = processamentoGraficos.getVetAcertos(vectorQuest, filename, ano)
+        vet_resultado = ProcessamentoGraficos.getVetAcertos(vectorQuest, filename, ano)
 
         results = {}
         for dic in vectorDict:
@@ -141,11 +156,23 @@ class processamentoGraficos:
         ax.legend(ncols=len(category_names), bbox_to_anchor=(0, 1),
                   loc='lower left', fontsize='small')
 
-        plt.savefig(os.getcwd() + '/graphics/GraficosPercentualAcertos/' + str(ano))
+        with open(file='dadosGraficos/acertos.csv', mode='w') as file:
+            for column in results.keys():
+                file.write(column + ';')
+
+            file.writelines('\n')
+
+            for vec in data:
+                file.write(str(vec[0]) + ';')
+
+            file.close()
+
+        plt.savefig(save_path)
+        plt.close()
 
 
-    def indiceFacilidade(vectorQuest, filename, ano: int):
-        vet_resultado = processamentoGraficos.getVetAcertos(vectorQuest, filename, ano)
+    def indiceFacilidade(vectorQuest, filename, ano: int, save_path):
+        vet_resultado = ProcessamentoGraficos.getVetAcertos(vectorQuest, filename, ano)
 
         results = {}
         j = 0
@@ -190,12 +217,13 @@ class processamentoGraficos:
             bar = ax.bar(atributo, valor, color='tab:blue')
             ax.bar_label(bar, fmt='{:,.0f}')
 
-        plt.savefig(os.getcwd() + '/graphics/GraficosFacilidade/' + str(ano))
+        plt.savefig(save_path)
+        plt.close()
 
         return facilidade, results
 
 
-    def facilidadePercentual(totalAcertos, vectorDict):
+    def facilidadePercentual(totalAcertos, vectorDict, save_path):
         siglas = {}
         for dicionario in vectorDict:
             siglas[dicionario['sigla']] = [0, 0, 0, 0, 0]  # muito dificil, dificil, medio, facil, muito facil
@@ -241,7 +269,8 @@ class processamentoGraficos:
                 i += 1
             ax.set_title(sigla)
 
-            plt.savefig(os.getcwd() + '/graphics/GraficosFacilidadePercentual/' + sigla)
+            plt.savefig(save_path)
+            plt.close()
 
         i = 0
         for facilidadeParcial, num in facilidade.items():
@@ -262,11 +291,17 @@ class processamentoGraficos:
             ax.set_title(facilidadeParcial)
 
             plt.savefig(os.getcwd() + '/graphics/GraficosFacilidadePercentual/' + facilidadeParcial)
+            plt.close()
 
 
-    def indiceDiscriminacao(vectorQuest, filename, ano: int):
+    def indiceDiscriminacao(vectorQuest, filename, ano: int, save_path):
         arq_filtrado = pd.read_csv(filename)
+        # Recebe o arquivo filtrado com os dados
+
         vet_respostas = arq_filtrado[(arq_filtrado['NU_ANO'] == ano)]
+        # Filtra o arquivo para que o vetor de respostas receba apenas as linhas
+        # do ano determinado
+
         vet_respostas = vet_respostas.reset_index(0)
 
         cr_linha = np.average(vet_respostas['NT_CE'])
@@ -334,12 +369,13 @@ class processamentoGraficos:
             bar = ax.bar(atributo, valor, color='tab:blue')
             ax.bar_label(bar, fmt='{:,.0f}')
 
-        plt.savefig(os.getcwd() + '/graphics/GraficosDiscriminacao/' + str(ano))
+        plt.savefig(save_path)
+        plt.close()
 
         return discriminacao, vet_ponto_bisserial
 
 
-    def discriminacaoPercentual(totalDiscriminacao, vectorDict):
+    def discriminacaoPercentual(totalDiscriminacao, vectorDict, save_path):
         siglas = {}
         for dicionario in vectorDict:
             siglas[dicionario['sigla']] = [0, 0, 0, 0]  # Muito Bom, Bom, Medio, Fraco
@@ -382,7 +418,8 @@ class processamentoGraficos:
                 i += 1
             ax.set_title(sigla)
 
-            plt.savefig(os.getcwd() + '/graphics/GraficosDiscriminacaoPercentual/' + sigla)
+            plt.savefig(save_path + sigla)
+            plt.close()
 
         i = 0
         for discriminacaoParcial, num in discriminacao.items():
@@ -402,8 +439,8 @@ class processamentoGraficos:
             i += 1
             ax.set_title(discriminacaoParcial)
 
-            plt.savefig(os.getcwd() + '/graphics/GraficosDiscriminacaoPercentual/' + discriminacaoParcial)
-
+            plt.savefig(save_path + discriminacaoParcial)
+            plt.close()
 
     def tabelaMediaDP(vectorQuest, filename):
         arq_filtrado = pd.read_csv(filename)
@@ -436,3 +473,121 @@ class processamentoGraficos:
 
         os.chdir(path)
 
+class ProcessamentoEspecifico:
+
+    def indiceDiscriminacao(dicDiscriminacao, vectorQuest, filename, ano: int, save_path, curso, cont):
+        arq_filtrado = pd.read_csv(filename)
+        vet_respostas = arq_filtrado[(arq_filtrado['NU_ANO'] == ano)]
+        vet_respostas = vet_respostas.reset_index(0)
+
+        cr_linha = np.average(vet_respostas['NT_CE'])
+
+        sr = np.std(vet_respostas['NT_CE'])
+
+        questoes = []
+        for quest in vectorQuest:
+            if (quest["ano"] == ano):
+                questoes = quest
+
+        vet_ponto_bisserial = []
+        for i in range(0, len(questoes["vet_tipo"])):  # alterar questoes por tema
+            vet_ca_linha = []
+            acertaram = 0
+            j = 0
+            for resposta in vet_respostas["DS_VT_ACE_OCE"]:
+                vet_res = []
+
+                if (str(resposta) != 'nan'):
+                    for digito in str(resposta):
+                        if (digito != 'Z'):
+                            vet_res.append(int(digito))
+
+                    if (vet_res[i] == 1):
+                        vet_ca_linha.append(vet_respostas['NT_CE'][j])
+                        acertaram += 1
+                j += 1
+            ca_linha = 0
+            if (len(vet_ca_linha) != 0):
+                ca_linha = np.average(vet_ca_linha)
+
+            p = 0
+            if (len(vet_respostas["DS_VT_ACE_OCE"]) > 0):
+                p = acertaram / len(vet_respostas["DS_VT_ACE_OCE"])
+
+            q = 1 - p
+
+            r_pb = ((ca_linha - cr_linha) / sr) * np.sqrt(p / q)
+
+            vet_ponto_bisserial.append([questoes["vet_tipo"][i], r_pb])
+
+        discriminacao = {
+            'Muito Bom': 0,
+            'Bom': 0,
+            'Medio': 0,
+            'Fraco': 0
+        }
+
+        for valor in vet_ponto_bisserial:
+            if (valor[1] != 0):
+                if (valor[1] <= 0.19):
+                    discriminacao['Muito Bom'] += 1
+                elif (valor[1] > 0.19 and valor[1] <= 0.29):
+                    discriminacao['Bom'] += 1
+                elif (valor[1] > 0.29 and valor[1] <= 0.39):
+                    discriminacao['Medio'] += 1
+                elif (valor[1] > 0.39):
+                    discriminacao['Fraco'] += 1
+
+        fig, ax = plt.subplots(figsize=(8, 5))
+        fig.suptitle("Indice de Discriminação " + str(ano))
+
+        x = np.arange(4)  # the label locations
+        width = 0.35  # the width of the bars
+
+        fig, ax = plt.subplots()
+
+        bars1 = ax.bar(x - width / 2, discriminacao.values(), width, color='tab:blue', label='Discriminação ' + str(curso))
+        bars2 = ax.bar(x + width / 2, dicDiscriminacao[cont].values(), width, color='tab:red', label='Geral')
+
+        ax.bar_label(bars1, fmt='{:,.0f}', padding=3)
+        ax.bar_label(bars2, fmt='{:,.0f}', padding=3)
+
+        ax.set_title('Índice de discriminação ' + str(ano))
+        ax.set_xticks(x, discriminacao.keys())
+
+        ax.legend()
+        fig.tight_layout()
+
+        plt.savefig(save_path)
+        plt.close()
+
+    def especifico(vectorQuest, vectorDict,
+                   totalDiscriminacaoQuantidade, filename, # ATRIBUTO filename = "filtrado.csv"
+                   curso, totalFacilidadeQuantidade,
+                   vecParcialDiscriminacao):
+
+        tabela = pd.read_csv(filename)
+        tabela_filtrada = tabela.loc[lambda tabela: (tabela['CO_CURSO'] == curso)]
+
+        #print(str(curso))
+        #print(curso[0])
+        #print(tabela_filtrada)
+
+        try:
+            os.remove('dados_especificos_filtrados.csv')
+            tabela_filtrada.to_csv('dados_especificos_filtrados.csv')
+
+        except:
+            tabela_filtrada.to_csv('dados_especificos_filtrados.csv')
+
+            # 1452
+        cont = len(vecParcialDiscriminacao) - 1
+        for vec in vectorQuest:
+            ProcessamentoEspecifico.indiceDiscriminacao(vecParcialDiscriminacao, vectorQuest, 'dados_especificos_filtrados.csv', vec['ano'], (os.getcwd() + '/graphics/GraficosEspecificos/GraficosDiscriminacao/' + str(curso) + ' - ' + str(vec['ano'])), curso, cont)
+            ProcessamentoGraficos.discriminacaoPercentual(totalDiscriminacaoQuantidade, vectorDict, (os.getcwd() + '/graphics/GraficosEspecificos/GraficosDiscriminacaoPercentual/' + str(curso) + ' - ' + str(vec['ano'])))
+            ProcessamentoGraficos.percentualAcertos(vectorQuest, vectorDict, 'dados_especificos_filtrados.csv', vec['ano'], (os.getcwd() + '/graphics/GraficosEspecificos/GraficosPercentualAcertos/' + str(curso) + ' - ' + str(vec['ano'])))
+            ProcessamentoGraficos.indiceFacilidade(vectorQuest, 'dados_especificos_filtrados.csv', vec['ano'], (os.getcwd() + '/graphics/GraficosEspecificos/GraficosFacilidade/' + str(curso) + ' - ' + str(vec['ano'])))
+            ProcessamentoGraficos.facilidadePercentual(totalFacilidadeQuantidade, vectorDict, (os.getcwd() + '/graphics/GraficosEspecificos/GraficosFacilidadePercentual/' + str(curso) + ' - ' + str(vec['ano'])))
+            ProcessamentoGraficos.quantidadeTema(vectorQuest, vectorDict, (os.getcwd() + '/graphics/GraficosEspecificos/GraficosQuantidade/' + str(curso) + ' - ' + str(vec['ano'])))
+
+            cont -= 1

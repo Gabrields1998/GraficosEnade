@@ -32,6 +32,8 @@ def downloadAndExtractZip(url: str, filename: str):
                 # Renomeia o arquivo para o nome que vem no .zip
                 os.renames(archives[0].split('/')[0], filename)
 
+                # DOCUMENTAR
+
     except:
         print("Erro ao extrair o arquivo ZIP " + filename + '!')
 

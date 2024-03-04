@@ -8,16 +8,20 @@ import shutil
 def graphicsDir():
 
     dirNames = ['GraficosDiscriminacao', 'GraficosDiscriminacaoPercentual', 'GraficosFacilidade',
-                    'GraficosFacilidadePercentual', 'GraficosPercentualAcertos', 'GraficosQuantidade', ]
+                'GraficosFacilidadePercentual', 'GraficosPercentualAcertos', 'GraficosQuantidade']
 
     if os.path.exists('graphics'):
         shutil.rmtree(r'graphics')
         os.mkdir('graphics')
+        os.mkdir('graphics/GraficosEspecificos')
+
     else:
         os.mkdir('graphics')
+        os.mkdir('graphics/GraficosEspecificos')
 
     for i in dirNames:
         os.mkdir(f'graphics/{i}')
+        os.mkdir(f'graphics/GraficosEspecificos/{i}')
 
 def tablesDir():
 

@@ -5,7 +5,7 @@ import matplotlib.pyplot as plt
 #import preProcessamentoBCC # USADO PARA OS ANOS < 2010
 import getDatabases
 import createDir
-from processamento import processamentoGraficos
+from processamento import ProcessamentoGraficos, ProcessamentoEspecifico
 import processamentoArquivos
 import leitor
 
@@ -81,7 +81,23 @@ if __name__ == '__main__':
     area onde os arquivos são filtrados e unidos em um unico arquivo filtrado.csv
     eles são filtrados por grupo e por alunos que realmente fizeram a prova
     """
+
+    # RECEBE UM CÓDIGO DE GRUPO DE CURSOS (Ex.: Ciências da Computação, Eng. Civil, etc.)
+    # INFORMADO PELO USUÁRIO
     co_grupo = int(input("Digite o código do grupo desejado:\nBCC - 4004\n>> "))
+    co_curso = []
+
+    # RECEBE DO USUÁRIO CÓDIGOS DE CURSOS ESPECÍFICOS PARA OBTER INFORMAÇÕES SOBRE O MESMO
+    # (Ex.: Ciêcias da Computação ~do Câmpus de Campo Mourão~)
+    print("Digite o código do curso cuja intenção é comparar com os cursos das demais instituições (-1 para nenhum):")
+    while True:
+        valor = int(input(">> "))
+
+        if (valor == -1):
+            break
+
+        co_curso.append(valor)
+        print("Deseja adicionar mais um curso específico? (-1 para parar)")
 
     arq_filtrado = pd.DataFrame()
 
@@ -95,13 +111,17 @@ if __name__ == '__main__':
     """
     GRAFICOS DE QUANTIDADE DE TEMAS
     """
-    processamentoGraficos.quantidadeTema(vectorQuest, vectorDict)
+    ProcessamentoGraficos.quantidadeTema(vectorQuest, vectorDict, (os.getcwd() + '/graphics/GraficosQuantidade/'))
 
     """
     GRAFICOS DE PERCENTUAL DE ACERTOS
     """
     for vec in vectorQuest:
-        processamentoGraficos.percentualAcertos(vectorQuest, vectorDict, "filtrado.csv", vec['ano'])
+        ProcessamentoGraficos.percentualAcertos(vectorQuest,
+                                                vectorDict,
+                                                "filtrado.csv",
+                                                vec['ano'],
+                                                (os.getcwd() + '/graphics/GraficosPercentualAcertos/' + str(vec['ano'])))
 
     """
     GRAFICOS DE FACILIDADE
@@ -117,7 +137,7 @@ if __name__ == '__main__':
     totalFacilidadeQuantidade = []
 
     for vec in vectorQuest:
-        parcialFacilidade, results = processamentoGraficos.indiceFacilidade(vectorQuest, "filtrado.csv", vec['ano'])
+        parcialFacilidade, results = ProcessamentoGraficos.indiceFacilidade(vectorQuest, "filtrado.csv", vec['ano'], (os.getcwd() + '/graphics/GraficosFacilidade/' + str(vec['ano'])))
         totalFacilidade['Muito Dificil'] += parcialFacilidade['Muito Dificil']
         totalFacilidade['Dificil'] += parcialFacilidade['Dificil']
         totalFacilidade['Medio'] += parcialFacilidade['Medio']
@@ -125,7 +145,7 @@ if __name__ == '__main__':
         totalFacilidade['Muito Facil'] += parcialFacilidade['Muito Facil']
         totalFacilidadeQuantidade.append(results)
 
-    processamentoGraficos.facilidadePercentual(totalFacilidadeQuantidade, vectorDict)
+    ProcessamentoGraficos.facilidadePercentual(totalFacilidadeQuantidade, vectorDict, (os.getcwd() + '/graphics/GraficosFacilidadePercentual/'))
 
     fig, ax = plt.subplots(figsize=(8, 5))
     fig.suptitle("Indice de facilidade Total")
@@ -147,15 +167,22 @@ if __name__ == '__main__':
     }
 
     totalDiscriminacaoQuantidade = []
+    vecParcialDiscriminacao = []
+
     for vec in vectorQuest:
-        parcialDiscriminacao, pontoBisserial = processamentoGraficos.indiceDiscriminacao(vectorQuest, "filtrado.csv", vec['ano'])
+        parcialDiscriminacao, pontoBisserial = ProcessamentoGraficos.indiceDiscriminacao(vectorQuest, "filtrado.csv", vec['ano'], (os.getcwd() + '/graphics/GraficosDiscriminacao/' + str(vec['ano'])))
+
+        vecParcialDiscriminacao.append(parcialDiscriminacao)
+
         totalDiscriminacao['Muito Bom'] += parcialDiscriminacao['Muito Bom']
         totalDiscriminacao['Bom'] += parcialDiscriminacao['Bom']
         totalDiscriminacao['Medio'] += parcialDiscriminacao['Medio']
         totalDiscriminacao['Fraco'] += parcialDiscriminacao['Fraco']
         totalDiscriminacaoQuantidade.append(pontoBisserial)
 
-    processamentoGraficos.discriminacaoPercentual(totalDiscriminacaoQuantidade, vectorDict)
+    vecParcialDiscriminacao.reverse()
+
+    ProcessamentoGraficos.discriminacaoPercentual(totalDiscriminacaoQuantidade, vectorDict, (os.getcwd() + '/graphics/GraficosDiscriminacaoPercentual/'))
 
     fig, ax = plt.subplots(figsize=(8, 5))
     fig.suptitle("Indice de Discriminação Total")
@@ -170,4 +197,20 @@ if __name__ == '__main__':
     TABELAS DESCRITIVAS
     """
 
-    processamentoGraficos.tabelaMediaDP(vectorQuest, "filtrado.csv")
+    ProcessamentoGraficos.tabelaMediaDP(vectorQuest, "filtrado.csv")
+
+    """
+    GRÁFICOS ESPECÍFICOS DOS CURSOS ESCOLHIDO
+    """
+
+
+    for x in co_curso:
+        if x != -1:
+            try:
+                ProcessamentoEspecifico.especifico(vectorQuest, vectorDict,
+                                                   totalDiscriminacaoQuantidade, "filtrado.csv",
+                                                   x, totalFacilidadeQuantidade,
+                                                   vecParcialDiscriminacao)
+
+            except OSError as e:
+                print(str(e) + "\nDetalhes:\nErro no seguinte valor informado:\n" + str(x))
