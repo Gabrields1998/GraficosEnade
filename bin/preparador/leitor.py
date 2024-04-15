@@ -2,7 +2,7 @@ import pandas as pd
 
 
 def readVectorQuest():
-    questoes = pd.read_csv('data/questoes.txt', delimiter=';')
+    questoes = pd.read_csv('dados/questoes.txt', delimiter=';')
 
     vetorQuestoes = []
 
@@ -14,7 +14,7 @@ def readVectorQuest():
 
 
 def readDictQuest():
-    dicionario = pd.read_csv('data/dicionario.txt', delimiter=';')
+    dicionario = pd.read_csv('dados/dicionario.txt', delimiter=';')
 
     vetorDicionario = []
 

@@ -4,7 +4,7 @@ import zipfile
 import py7zr
 
 
-def downloadAndExtractZip(url: str, filename: str):
+def baixa_e_extrai(url: str, filename: str):
     # Nome do arquivo ZIP após o download
     fileZip = filename + '.zip'
 

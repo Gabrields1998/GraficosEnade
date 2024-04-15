@@ -2,7 +2,7 @@ import pandas as pd
 import os
 
 
-def accessCSVFiles(fileName: str, ano: int, co_grupo: int):
+def filtragem(fileName: str, ano: int, co_grupo: int):
     print(fileName)
 
     # Entra na pasta DADOS dentro da pasta microdados_enade
@@ -11,11 +11,6 @@ def accessCSVFiles(fileName: str, ano: int, co_grupo: int):
     lista_arquivos = os.listdir()
     data_path = path + '/' + fileName + '/' + lista_arquivos[0]
     os.chdir(data_path)
-
-    # TESTE
-    print('Lista de arquivos: ', lista_arquivos)
-    print('Caminho: ' + path)
-    print('Caminho dos dados: ' + data_path)
 
     # Abrindo o arquivo de entrada como CSV e lendo para o Pandas
     dfArq1 = pd.read_csv('microdados' + str(ano) + '_arq1.txt', delimiter=';')
@@ -36,23 +31,18 @@ def accessCSVFiles(fileName: str, ano: int, co_grupo: int):
 
     df1_filtered = pd.DataFrame()
 
-    # provas realizadas antes de 2010 possuem subarea
-    # if(ano >= 2010):
+    # Provas realizadas antes de 2010 possuem sub-área
     dfArq1_columns = dfArq1[['NU_ANO', 'CO_CURSO', 'CO_GRUPO']]
 
-    # filtra o DataFrame de acordo com o ano e o código do grupo passado
+    # Filtra o DataFrame de acordo com o ano e o código do grupo passado
     df1_filtered = dfArq1_columns[(dfArq1_columns['NU_ANO'] == ano) & (dfArq1_columns['CO_GRUPO'] == co_grupo)]
-    # else:
-    #     dfArq1_columns = dfArq1[['NU_ANO', 'CO_CURSO', 'CO_GRUPO', 'CO_SUBAREA']]
-    #     # filtra o DataFrame de acordo com o ano e o código do grupo passado
-    #     df1_filtered = dfArq1_columns[(dfArq1_columns['NU_ANO'] == ano) & (dfArq1_columns['CO_SUBAREA'] == co_subarea)]
 
     # obtém os CO_CURSOS únicos das linhas encontradas
     unique_co_cursos = df1_filtered["CO_CURSO"].unique()
 
-    # filtra o DataFrame de acordo com a lista de CO_CURSOS obtida anteriormente
-    # 556 = Participação com resultado desconsiderado pela Aplicadora**
-    # 889 = Prova não realizada por problemas administrativos**
+    # filtra o DataFrame de acordo com a lista de CO_CURSOS obtida anteriormente:
+    # 556 = Participação com resultado desconsiderado pela Aplicadora **
+    # 889 = Prova não realizada por problemas administrativos **
 
     dfArq3_columns_filtered = dfArq3_columns[
         (dfArq3_columns['CO_CURSO'].isin(unique_co_cursos)) & (dfArq3_columns['TP_PR_OB_CE'] != 556) & (
@@ -66,5 +56,38 @@ def accessCSVFiles(fileName: str, ano: int, co_grupo: int):
 
     os.chdir(path)
 
-    # escreve o arquivo CSV
+    # Retorna o DataFrame filtrado para ser transformado em arquivo CSV.
     return dfArq3_columns_filtered
+
+def filtrado_to_csv(microdadoCabecalhos, vectorQuest, co_grupo):
+
+    '''
+    FILTRAGEM
+
+    Área onde os arquivos são filtrados e unidos em um unico arquivo filtrado.csv.
+    Eles são filtrados por grupo e por alunos que realmente fizeram a prova
+    '''
+
+    arq_filtrado = pd.DataFrame()
+
+    for dic in microdadoCabecalhos:
+        for vec in vectorQuest:
+            if dic['ano'] == vec['ano']:
+                arq_filtrado = pd.concat([arq_filtrado, filtragem(dic['nome'], dic['ano'], co_grupo)],
+                                         ignore_index=True)
+    arq_filtrado.to_csv(r"../../tabelas/filtrado.csv")
+
+def specific_filtrado_to_csv(filename, cursos):
+    tabela = pd.read_csv(filename)
+    tabela_filtrada = pd.DataFrame(columns=tabela.columns())
+
+    for i in range(len(cursos)):
+        tabela_filtrada += tabela.loc[lambda tabela: (tabela['CO_CURSO'] == cursos[i])]
+
+    try:
+        os.remove('dados_especificos_filtrados.csv')
+        tabela_filtrada.to_csv('dados_especificos_filtrados.csv')
+
+    except:
+        tabela_filtrada.to_csv('dados_especificos_filtrados.csv')
+
