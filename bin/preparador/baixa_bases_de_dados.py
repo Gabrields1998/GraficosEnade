@@ -33,7 +33,7 @@ def baixa_e_extrai(url: str, nome_do_arquivo: str):
 
         except:
             with py7zr.SevenZipFile(caminho + '/' + fileZip, 'r') as zip_ref:
-                zip_ref.extractall()
+                zip_ref.extractall(caminho)
                 archives = zip_ref.getnames(caminho)
                 # Renomeia o arquivo para o nome que vem no .zip
                 os.renames(archives[0].split('/')[0], nome_do_arquivo)

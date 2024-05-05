@@ -1,9 +1,9 @@
 .gitignore
-/.git/
+/.git/*
 .idea
-/graficos/
-/tabelas/
+/graficos/*
+/tabelas/*
 __pycache__
-/dados_dos_graficos/
-/microdados/
-/anotacoes/
+/dados_dos_graficos/*
+/microdados/*
+/anotacoes/*
