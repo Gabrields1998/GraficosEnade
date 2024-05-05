@@ -4,7 +4,7 @@ import matplotlib.pyplot as plt
 #import preProcessamentoBCC # USADO PARA OS ANOS < 2010
 from bin.preparador import cria_diretorios, baixa_bases_de_dados, leitor
 from bin.gera_graficos import gera_graficos_geral, gera_graficos_especificos
-from interacao_com_usuario import le_entrada_terminal
+from bin.interacao_com_usuario import le_entrada_terminal
 
 if __name__ == '__main__':
     cria_diretorios.diretorios_dos_graficos()
@@ -40,7 +40,7 @@ if __name__ == '__main__':
     {'nome': 'microdados_enade_2005', 'ano': 2005},
     {'nome': 'microdados_enade_2004', 'ano': 2004}]'''
 
-    diretorioAtual = os.listdir()
+    diretorio_atual = os.listdir('microdados')
 
     '''
     LEITOR
@@ -54,7 +54,7 @@ if __name__ == '__main__':
     area responsavel pelo download dos microdados do enade (todos que estiverem no cabeçalho)
     '''
     for cabeçalho in microdadoCabeçalhos:
-        if cabeçalho['nome'] not in diretorioAtual:
+        if cabeçalho['nome'] not in diretorio_atual:
             baixa_bases_de_dados.baixa_e_extrai('https://download.inep.gov.br/microdados/' + cabeçalho['nome'] + '.zip',
                                                 cabeçalho['nome'])
 
@@ -80,10 +80,10 @@ if __name__ == '__main__':
     '''
     for vec in vectorQuest:
         gera_graficos_geral.percentualAcertos(vectorQuest,
-                                                vectorDict,
-                                                "filtrado.csv",
-                                                vec['ano'],
-                                                (os.getcwd() + '/graficos/GraficosPercentualAcertos/' + str(vec['ano'])))
+                                              vectorDict,
+                                              "tabelas/filtrado.csv",
+                                              vec['ano'],
+                                              (os.getcwd() + '/graficos/GraficosPercentualAcertos/' + str(vec['ano'])))
 
     '''
     GRAFICOS DE FACILIDADE
@@ -99,7 +99,7 @@ if __name__ == '__main__':
     totalFacilidadeQuantidade = []
 
     for vec in vectorQuest:
-        parcialFacilidade, results = gera_graficos_geral.indiceFacilidade(vectorQuest, "filtrado.csv", vec['ano'], (os.getcwd() + '/graficos/GraficosFacilidade/' + str(vec['ano'])))
+        parcialFacilidade, results = gera_graficos_geral.indiceFacilidade(vectorQuest, "tabelas/filtrado.csv", vec['ano'], (os.getcwd() + '/graficos/GraficosFacilidade/' + str(vec['ano'])))
         totalFacilidade['Muito Dificil'] += parcialFacilidade['Muito Dificil']
         totalFacilidade['Dificil'] += parcialFacilidade['Dificil']
         totalFacilidade['Medio'] += parcialFacilidade['Medio']
@@ -132,7 +132,8 @@ if __name__ == '__main__':
     vecParcialDiscriminacao = []
 
     for vec in vectorQuest:
-        parcialDiscriminacao, pontoBisserial = gera_graficos_geral.grafico_de_discriminacao(vectorQuest, 'filtrado.csv', vec['ano'], (os.getcwd() + '/graficos/GraficosDiscriminacao/' + str(vec['ano'])))
+        parcialDiscriminacao, pontoBisserial = gera_graficos_geral.grafico_de_discriminacao(vectorQuest,
+                                                                                            'tabelas/filtrado.csv', vec['ano'], (os.getcwd() + '/graficos/GraficosDiscriminacao/' + str(vec['ano'])))
 
         vecParcialDiscriminacao.append(parcialDiscriminacao)
 
@@ -158,7 +159,7 @@ if __name__ == '__main__':
     '''
     TABELAS DESCRITIVAS
     '''
-    gera_graficos_geral.tabelaMediaDP(vectorQuest, "filtrado.csv")
+    gera_graficos_geral.tabelaMediaDP(vectorQuest, "tabelas/filtrado.csv")
 
     '''
     GRÁFICOS ESPECÍFICOS DOS CURSOS ESCOLHIDO
@@ -167,10 +168,10 @@ if __name__ == '__main__':
         if x != -1:
             try:
                 gera_graficos_especificos.especifico(vectorQuest, vectorDict,
-                                                   totalDiscriminacaoQuantidade, "filtrado.csv",
-                                                   x, totalFacilidadeQuantidade,
-                                                   vecParcialDiscriminacao, discriminacaoPercentualGeral,
-                                                   siglasGeral)
+                                                     totalDiscriminacaoQuantidade, "tabelas/filtrado.csv",
+                                                     x, totalFacilidadeQuantidade,
+                                                     vecParcialDiscriminacao, discriminacaoPercentualGeral,
+                                                     siglasGeral)
 
             except OSError as e:
                 print(str(e) + '\nDetalhes:\nErro no seguinte valor informado:\n' + str(x))

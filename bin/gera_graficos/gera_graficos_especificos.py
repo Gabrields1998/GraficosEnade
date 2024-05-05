@@ -4,7 +4,6 @@ import matplotlib.pyplot as plt
 from bin.processamento import algoritmos
 
 def grafico_discriminacao(dicDiscriminacao, vectorQuest, filename, ano: int, save_path, curso, cont):
-
     discriminacao = algoritmos.indice_de_discriminacao(vectorQuest, filename, ano)
 
     fig, ax = plt.subplots(figsize=(8, 5))
