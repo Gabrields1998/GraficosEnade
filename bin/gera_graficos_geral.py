@@ -2,7 +2,7 @@ import os
 import pandas as pd
 import matplotlib.pyplot as plt
 import numpy as np
-from bin.processamento import algoritmos
+from bin import algoritmos
 
 
 def quantidadeTema(questoes, dicionario, save_path):

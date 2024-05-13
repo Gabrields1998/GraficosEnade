@@ -1,46 +1,16 @@
 import os
 import matplotlib.pyplot as plt
 
+# TODO preparar o arquivo de pré processamento no futuro
 #import preProcessamentoBCC # USADO PARA OS ANOS < 2010
-from bin.preparador import cria_diretorios, baixa_bases_de_dados, leitor
-from bin.gera_graficos import gera_graficos_geral, gera_graficos_especificos
-from bin.interacao_com_usuario import le_entrada_terminal
+from bin import leitor, filtra_arquivos, baixa_bases_de_dados, cria_diretorios, gera_graficos_geral, \
+    le_entrada_terminal, gera_graficos_especificos
 
 if __name__ == '__main__':
-    cria_diretorios.diretorios_dos_graficos()
-    cria_diretorios.diretorios_das_tabelas()
-    '''
-    CABEÇALHO
-    dicionario utilizado para facilitar o controle do sistema
-    '''
-    microdadoCabeçalhos = [
-        {'nome': 'microdados_enade_2021', 'ano': 2021},
-        {'nome': 'microdados_enade_2019_LGPD', 'ano': 2019},
-        {'nome': 'microdados_enade_2018_LGPD', 'ano': 2018},
-        {'nome': 'microdados_enade_2017_LGPD', 'ano': 2017},
-        {'nome': 'microdados_enade_2016_LGPD', 'ano': 2016},
-        {'nome': 'microdados_enade_2015_LGPD', 'ano': 2015},
-        {'nome': 'microdados_enade_2014_LGPD', 'ano': 2014},
-        {'nome': 'microdados_enade_2013_LGPD', 'ano': 2013},
-        {'nome': 'microdados_enade_2012_LGPD', 'ano': 2012},
-        {'nome': 'microdados_enade_2011', 'ano': 2011},
-        {'nome': 'microdados_enade_2010', 'ano': 2010},
-        {'nome': 'microdados_enade_2009', 'ano': 2009},
-        {'nome': 'microdados_enade_2008', 'ano': 2008},
-        {'nome': 'microdados_enade_2007', 'ano': 2007},
-        {'nome': 'microdados_enade_2006', 'ano': 2006},
-        {'nome': 'microdados_enade_2005', 'ano': 2005},
-        {'nome': 'microdados_enade_2004', 'ano': 2004}]
+    cria_diretorios.diretorios_graficos()
+    cria_diretorios.diretorios_tabelas()
+    cria_diretorios.diretorios_microdados()
 
-    # MICRODADOS QUE ESTÃO DANDO PROBLEMA
-    '''{'nome': 'microdados_enade_2009', 'ano': 2009},
-    {'nome': 'microdados_enade_2008', 'ano': 2008},
-    {'nome': 'microdados_enade_2007', 'ano': 2007},
-    {'nome': 'microdados_enade_2006', 'ano': 2006},
-    {'nome': 'microdados_enade_2005', 'ano': 2005},
-    {'nome': 'microdados_enade_2004', 'ano': 2004}]'''
-
-    diretorio_atual = os.listdir('microdados')
 
     '''
     LEITOR
@@ -53,10 +23,8 @@ if __name__ == '__main__':
     DOWNLOAD
     area responsavel pelo download dos microdados do enade (todos que estiverem no cabeçalho)
     '''
-    for cabeçalho in microdadoCabeçalhos:
-        if cabeçalho['nome'] not in diretorio_atual:
-            baixa_bases_de_dados.baixa_e_extrai('https://download.inep.gov.br/microdados/' + cabeçalho['nome'] + '.zip',
-                                                cabeçalho['nome'])
+
+    microdado_cabecalhos_padrao_pasta = baixa_bases_de_dados.compara_cabecalhos_e_baixa()
 
     '''
     PRE PROCESSAMENTO
@@ -68,7 +36,8 @@ if __name__ == '__main__':
 
     co_grupo, co_curso = le_entrada_terminal.informa_grupo_e_curso()
 
-
+    filtra_arquivos.filtrado_para_csv(microdado_cabecalhos_padrao_pasta, vectorQuest, co_grupo)
+    filtra_arquivos.filtrado_especifico_para_csv('./tabelas/dados_filtrados.csv', co_curso)
 
     '''
     GRAFICOS DE QUANTIDADE DE TEMAS
@@ -81,7 +50,7 @@ if __name__ == '__main__':
     for vec in vectorQuest:
         gera_graficos_geral.percentualAcertos(vectorQuest,
                                               vectorDict,
-                                              "tabelas/filtrado.csv",
+                                              "tabelas/dados_filtrados.csv",
                                               vec['ano'],
                                               (os.getcwd() + '/graficos/GraficosPercentualAcertos/' + str(vec['ano'])))
 
@@ -99,7 +68,7 @@ if __name__ == '__main__':
     totalFacilidadeQuantidade = []
 
     for vec in vectorQuest:
-        parcialFacilidade, results = gera_graficos_geral.indiceFacilidade(vectorQuest, "tabelas/filtrado.csv", vec['ano'], (os.getcwd() + '/graficos/GraficosFacilidade/' + str(vec['ano'])))
+        parcialFacilidade, results = gera_graficos_geral.indiceFacilidade(vectorQuest, "tabelas/dados_filtrados.csv", vec['ano'], (os.getcwd() + '/graficos/GraficosFacilidade/' + str(vec['ano'])))
         totalFacilidade['Muito Dificil'] += parcialFacilidade['Muito Dificil']
         totalFacilidade['Dificil'] += parcialFacilidade['Dificil']
         totalFacilidade['Medio'] += parcialFacilidade['Medio']
@@ -133,7 +102,7 @@ if __name__ == '__main__':
 
     for vec in vectorQuest:
         parcialDiscriminacao, pontoBisserial = gera_graficos_geral.grafico_de_discriminacao(vectorQuest,
-                                                                                            'tabelas/filtrado.csv', vec['ano'], (os.getcwd() + '/graficos/GraficosDiscriminacao/' + str(vec['ano'])))
+                                                                                            'tabelas/dados_filtrados.csv', vec['ano'], (os.getcwd() + '/graficos/GraficosDiscriminacao/' + str(vec['ano'])))
 
         vecParcialDiscriminacao.append(parcialDiscriminacao)
 
@@ -159,7 +128,7 @@ if __name__ == '__main__':
     '''
     TABELAS DESCRITIVAS
     '''
-    gera_graficos_geral.tabelaMediaDP(vectorQuest, "tabelas/filtrado.csv")
+    gera_graficos_geral.tabelaMediaDP(vectorQuest, "./tabelas/dados_filtrados.csv")
 
     '''
     GRÁFICOS ESPECÍFICOS DOS CURSOS ESCOLHIDO
@@ -168,7 +137,7 @@ if __name__ == '__main__':
         if x != -1:
             try:
                 gera_graficos_especificos.especifico(vectorQuest, vectorDict,
-                                                     totalDiscriminacaoQuantidade, "tabelas/filtrado.csv",
+                                                     totalDiscriminacaoQuantidade, "./tabelas/dados_filtrados.csv",
                                                      x, totalFacilidadeQuantidade,
                                                      vecParcialDiscriminacao, discriminacaoPercentualGeral,
                                                      siglasGeral)

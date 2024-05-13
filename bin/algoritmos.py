@@ -64,7 +64,7 @@ def indice_de_discriminacao(vectorQuest, filename, ano: int):
             elif (valor[1] > 0.39):
                 discriminacao['Fraco'] += 1
 
-    return discriminacao
+    return discriminacao, vet_ponto_bisserial
 
 def indice_de_discriminacao_percentual(discriminacaoPercentualGeral, siglasGeral, vectorDict, save_path, totalDiscriminacaoEspecifica, curso):
     siglas = {}
@@ -131,3 +131,6 @@ def obter_vetor_acertos(vetor_quest, arquivo, ano):
 
         vet_resultado.append(flag)
     return vet_resultado
+
+# TODO remover os algoritmos que estão nas funções de geração de gráficos
+# e adicioná-los a esse arquivo, implementando um código mais limpo

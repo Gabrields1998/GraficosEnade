@@ -1,7 +1,8 @@
-.gitignore
 /graficos/
 /.idea/
 /microdados/
 /tabelas/
 /dados_dos_graficos/
 /anotacoes/
+/.gitignore
+/README.md.backup

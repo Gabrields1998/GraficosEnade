@@ -2,14 +2,14 @@ import pandas as pd
 import os
 
 
-def filtragem(fileName: str, ano: int, co_grupo: int):
-    print(fileName)
+def filtragem(nome_do_arquivo: str, ano: int, co_grupo: int):
+    print(nome_do_arquivo)
 
     # Entra na pasta DADOS dentro da pasta microdados_enade
-    path = os.getcwd()
-    os.chdir(path + '/' + fileName)
+    caminho = os.getcwd()
+    os.chdir(caminho + '/microdados/' + nome_do_arquivo)
     lista_arquivos = os.listdir()
-    data_path = path + '/' + fileName + '/' + lista_arquivos[0]
+    data_path = caminho + '/microdados/' + nome_do_arquivo + '/' + lista_arquivos[0]
     os.chdir(data_path)
 
     # Abrindo o arquivo de entrada como CSV e lendo para o Pandas
@@ -54,12 +54,12 @@ def filtragem(fileName: str, ano: int, co_grupo: int):
     if (ano == 2005):
         dfArq3_columns_filtered = dfArq3_columns_filtered[dfArq3_columns_filtered.DS_VT_ACE_OCE.str.contains(r'^Z.*Z$')]
 
-    os.chdir(path)
+    os.chdir(caminho)
 
     # Retorna o DataFrame filtrado para ser transformado em arquivo CSV.
     return dfArq3_columns_filtered
 
-def filtrado_to_csv(microdadoCabecalhos, vectorQuest, co_grupo):
+def filtrado_para_csv(microdadoCabecalhos, vectorQuest, co_grupo):
 
     '''
     FILTRAGEM
@@ -75,19 +75,19 @@ def filtrado_to_csv(microdadoCabecalhos, vectorQuest, co_grupo):
             if dic['ano'] == vec['ano']:
                 arq_filtrado = pd.concat([arq_filtrado, filtragem(dic['nome'], dic['ano'], co_grupo)],
                                          ignore_index=True)
-    arq_filtrado.to_csv(r"../../tabelas/filtrado.csv")
+    arq_filtrado.to_csv(r"./tabelas/dados_filtrados.csv")
 
-def specific_filtrado_to_csv(filename, cursos):
+def filtrado_especifico_para_csv(filename, cursos):
     tabela = pd.read_csv(filename)
-    tabela_filtrada = pd.DataFrame(columns=tabela.columns())
+    tabela_filtrada = pd.DataFrame(columns=tabela.columns)
 
     for i in range(len(cursos)):
         tabela_filtrada += tabela.loc[lambda tabela: (tabela['CO_CURSO'] == cursos[i])]
 
     try:
-        os.remove('dados_especificos_filtrados.csv')
-        tabela_filtrada.to_csv('dados_especificos_filtrados.csv')
+        os.remove('./tabelas/dados_especificos_filtrados.csv')
+        tabela_filtrada.to_csv('./tabelas/dados_especificos_filtrados.csv')
 
     except:
-        tabela_filtrada.to_csv('dados_especificos_filtrados.csv')
+        tabela_filtrada.to_csv('./tabelas/dados_especificos_filtrados.csv')
 

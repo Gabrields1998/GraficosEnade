@@ -1,10 +1,10 @@
 import os
 import numpy as np
 import matplotlib.pyplot as plt
-from bin.processamento import algoritmos
+from bin import algoritmos
 
-def grafico_discriminacao(dicDiscriminacao, vectorQuest, filename, ano: int, save_path, curso, cont):
-    discriminacao = algoritmos.indice_de_discriminacao(vectorQuest, filename, ano)
+
+def grafico_discriminacao(dicDiscriminacao, discriminacao, ano: int, save_path, curso, cont):
 
     fig, ax = plt.subplots(figsize=(8, 5))
     fig.suptitle("Indice de Discriminação " + str(ano))
@@ -74,7 +74,7 @@ def grafico_discriminacao_percentual(discriminacaoPercentualGeral, siglasGeral, 
         plt.close()
 
 def especifico(vectorQuest, vectorDict,
-               totalDiscriminacaoQuantidade, filename, # ATRIBUTO filename = "filtrado.csv"
+               totalDiscriminacaoQuantidade, nome_do_arquivo, # ATRIBUTO nome_do_arquivo = "dados_filtrados.csv"
                curso, totalFacilidadeQuantidade,
                vecParcialDiscriminacao, discriminacaoPercentualGeral,
                siglasGeral):
@@ -95,17 +95,20 @@ def especifico(vectorQuest, vectorDict,
     totalDiscriminacaoQuantidadeEspecifica = []
 
     for vec in vectorQuest:
-        parcialDiscriminacao, pontoBisserial = grafico_discriminacao(vecParcialDiscriminacao, vectorQuest, 'dados_especificos_filtrados.csv', vec['ano'], (os.getcwd() + '/graficos/GraficosEspecificos/GraficosDiscriminacao/' + str(curso) + ' - ' + str(vec['ano'])), curso, cont)
-        totalDiscriminacao['Muito Bom'] += parcialDiscriminacao['Muito Bom']
-        totalDiscriminacao['Bom'] += parcialDiscriminacao['Bom']
-        totalDiscriminacao['Medio'] += parcialDiscriminacao['Medio']
-        totalDiscriminacao['Fraco'] += parcialDiscriminacao['Fraco']
-        totalDiscriminacaoQuantidadeEspecifica.append(pontoBisserial)
+        discriminacao, vet_ponto_bisserial = algoritmos.indice_de_discriminacao(vectorQuest, nome_do_arquivo, vec['ano'])
+        # TODO tá com erro, os dados estão incorretos
+        grafico_discriminacao(vecParcialDiscriminacao, discriminacao, vec['ano'], (os.getcwd() + '/graficos/GraficosEspecificos/GraficosDiscriminacao/' + str(curso) + ' - ' + str(vec['ano'])), curso, cont)
+        totalDiscriminacao['Muito Bom'] += discriminacao['Muito Bom']
+        totalDiscriminacao['Bom'] += discriminacao['Bom']
+        totalDiscriminacao['Medio'] += discriminacao['Medio']
+        totalDiscriminacao['Fraco'] += discriminacao['Fraco']
+        totalDiscriminacaoQuantidadeEspecifica.append(vet_ponto_bisserial)
         cont -= 1
-    grafico_discriminacao_percentual(discriminacaoPercentualGeral, siglasGeral, vectorDict, (os.getcwd() + '/graficos/GraficosEspecificos/GraficosDiscriminacaoPercentual/' + str(curso) + ' - ' + str(vec['ano'])), totalDiscriminacaoQuantidadeEspecifica, str(curso))
+    #grafico_discriminacao_percentual(discriminacaoPercentualGeral, siglasGeral, vectorDict, (os.getcwd() + '/graficos/GraficosEspecificos/GraficosDiscriminacaoPercentual/' + str(curso) + ' - ' + str(vec['ano'])), totalDiscriminacaoQuantidadeEspecifica, str(curso))
 
-    #ProcessamentoGraficos.percentualAcertos(vectorQuest, vectorDict, 'dados_especificos_filtrados.csv', vec['ano'], (os.getcwd() + '/graficos/GraficosEspecificos/GraficosPercentualAcertos/' + str(curso) + ' - ' + str(vec['ano'])))
-    #ProcessamentoGraficos.indiceFacilidade(vectorQuest, 'dados_especificos_filtrados.csv', vec['ano'], (os.getcwd() + '/graficos/GraficosEspecificos/GraficosFacilidade/' + str(curso) + ' - ' + str(vec['ano'])))
+    # TODO finalizar a geraçao de gráficos específicos dos cursos
+    #ProcessamentoGraficos.percentualAcertos(vectorQuest, vectorDict, './tabelas/dados_especificos_filtrados.csv', vec['ano'], (os.getcwd() + '/graficos/GraficosEspecificos/GraficosPercentualAcertos/' + str(curso) + ' - ' + str(vec['ano'])))
+    #ProcessamentoGraficos.indiceFacilidade(vectorQuest, './tabelas/dados_especificos_filtrados.csv', vec['ano'], (os.getcwd() + '/graficos/GraficosEspecificos/GraficosFacilidade/' + str(curso) + ' - ' + str(vec['ano'])))
     #ProcessamentoGraficos.facilidadePercentual(totalFacilidadeQuantidade, vectorDict, (os.getcwd() + '/graficos/GraficosEspecificos/GraficosFacilidadePercentual/' + str(curso) + ' - ' + str(vec['ano'])))
     #ProcessamentoGraficos.quantidadeTema(vectorQuest, vectorDict, (os.getcwd() + '/graficos/GraficosEspecificos/GraficosQuantidade/' + str(curso) + ' - ' + str(vec['ano'])))
 

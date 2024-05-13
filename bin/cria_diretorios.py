@@ -5,7 +5,7 @@ import shutil
 # Apaga todas as pastas com os gráficos processados
 # e as cria novamente para uma nova execução
 
-def diretorios_dos_graficos():
+def diretorios_graficos():
     '''
     Cria os diretórios em que serão armazenados os gráficos
     '''
@@ -25,7 +25,7 @@ def diretorios_dos_graficos():
         os.mkdir(f'graficos/{i}')
         os.mkdir(f'graficos/GraficosEspecificos/{i}')
 
-def diretorios_das_tabelas():
+def diretorios_tabelas():
     '''
     Cria os diretórios em que serão armazenadas as tabelas
     utilizadas em parte do processamento dos gráficos
@@ -35,3 +35,7 @@ def diretorios_das_tabelas():
         os.mkdir('tabelas')
     else:
         os.mkdir('tabelas')
+
+def diretorios_microdados():
+    if (not os.path.exists('microdados')):
+        os.mkdir('microdados')
