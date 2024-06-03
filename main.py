@@ -37,7 +37,6 @@ if __name__ == '__main__':
     co_grupo, co_curso = le_entrada_terminal.informa_grupo_e_curso()
 
     filtra_arquivos.filtrado_para_csv(microdado_cabecalhos_padrao_pasta, vectorQuest, co_grupo)
-    filtra_arquivos.filtrado_especifico_para_csv('./tabelas/dados_filtrados.csv', co_curso)
 
     '''
     GRAFICOS DE QUANTIDADE DE TEMAS

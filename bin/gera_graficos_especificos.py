@@ -1,7 +1,7 @@
 import os
 import numpy as np
 import matplotlib.pyplot as plt
-from bin import algoritmos
+from bin import algoritmos, filtra_arquivos
 
 
 def grafico_discriminacao(dicDiscriminacao, discriminacao, ano: int, save_path, curso, cont):
@@ -74,7 +74,7 @@ def grafico_discriminacao_percentual(discriminacaoPercentualGeral, siglasGeral, 
         plt.close()
 
 def especifico(vectorQuest, vectorDict,
-               totalDiscriminacaoQuantidade, nome_do_arquivo, # ATRIBUTO nome_do_arquivo = "dados_filtrados.csv"
+               totalDiscriminacaoQuantidade, arquivo_filtrado,  # ATRIBUTO arquivo_filtrado = "dados_filtrados.csv"
                curso, totalFacilidadeQuantidade,
                vecParcialDiscriminacao, discriminacaoPercentualGeral,
                siglasGeral):
@@ -83,6 +83,9 @@ def especifico(vectorQuest, vectorDict,
     seus respectivos gráficos individualmente
     '''
     # 1452
+
+    filtra_arquivos.filtrado_especifico_para_csv(arquivo_filtrado, curso)
+    arquivo_especifico_filtrado = './tabelas/dados_especificos_filtrados.csv'
 
     totalDiscriminacao = {
         'Muito Bom': 0,
@@ -95,7 +98,7 @@ def especifico(vectorQuest, vectorDict,
     totalDiscriminacaoQuantidadeEspecifica = []
 
     for vec in vectorQuest:
-        discriminacao, vet_ponto_bisserial = algoritmos.indice_de_discriminacao(vectorQuest, nome_do_arquivo, vec['ano'])
+        discriminacao, vet_ponto_bisserial = algoritmos.indice_de_discriminacao(vectorQuest, arquivo_especifico_filtrado, vec['ano'])
         # TODO tá com erro, os dados estão incorretos
         grafico_discriminacao(vecParcialDiscriminacao, discriminacao, vec['ano'], (os.getcwd() + '/graficos/GraficosEspecificos/GraficosDiscriminacao/' + str(curso) + ' - ' + str(vec['ano'])), curso, cont)
         totalDiscriminacao['Muito Bom'] += discriminacao['Muito Bom']

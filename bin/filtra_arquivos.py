@@ -77,12 +77,11 @@ def filtrado_para_csv(microdadoCabecalhos, vectorQuest, co_grupo):
                                          ignore_index=True)
     arq_filtrado.to_csv(r"./tabelas/dados_filtrados.csv")
 
-def filtrado_especifico_para_csv(filename, cursos):
+def filtrado_especifico_para_csv(filename, curso):
     tabela = pd.read_csv(filename)
-    tabela_filtrada = pd.DataFrame(columns=tabela.columns)
+    #tabela_filtrada = pd.DataFrame(columns=tabela.columns)
 
-    for i in range(len(cursos)):
-        tabela_filtrada += tabela.loc[lambda tabela: (tabela['CO_CURSO'] == cursos[i])]
+    tabela_filtrada = tabela.loc[(tabela['CO_CURSO'] == curso)]
 
     try:
         os.remove('./tabelas/dados_especificos_filtrados.csv')

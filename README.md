@@ -2,15 +2,15 @@
 ---
 ## Requisitos:
 
-- [Pandas](https://pandas.pydata.org/docs/getting_started/install.html)
+- Pandas
 
-- [NumPy](https://numpy.org/install/)
+- NumPy
 
-- [Matplotlib](https://matplotlib.org/stable/users/installing/index.html)
+- Matplotlib
 
-- [Py7zr](https://pypi.org/project/py7zr/)
+- Py7zr
 
-- [ZipFile](https://docs.python.org/3/library/zipfile.html)
+- ZipFile
 
 ---
 
@@ -21,10 +21,11 @@ git clone https://github.com/Gabrields1998/GraficosEnade.git
 ```
 Acesse a pasta e execute o arquivo `main.py`:
 
- - No Linux, pressione o botão `F4` para abrir o terminal, e, nele, insira o seguinte comando:
+ - No Linux, pressione o botão `F4` para abrir o terminal, e, nele, insira os seguintes comandos:
 	```
+	python3 -m pip install -r requirements.txt
+	
 	python3 main.py
 	```
- - No Windows, dê dois cliques sobre o arquivo e aguarde a janela do `cmd` se fechar, indicando que o algoritmo foi encerrado.
 ---
 
