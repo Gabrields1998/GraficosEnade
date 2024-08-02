@@ -1,11 +1,10 @@
 import os
 import numpy as np
 import matplotlib.pyplot as plt
-from bin import algoritmos, filtra_arquivos
+from arquivos_python import filtra_arquivos, algoritmos
 
 
 def grafico_discriminacao(dicDiscriminacao, discriminacao, ano: int, save_path, curso, cont):
-
     fig, ax = plt.subplots(figsize=(8, 5))
     fig.suptitle("Indice de Discriminação " + str(ano))
 
@@ -29,11 +28,12 @@ def grafico_discriminacao(dicDiscriminacao, discriminacao, ano: int, save_path, 
     plt.savefig(save_path)
     plt.close()
 
-def grafico_discriminacao_percentual(discriminacaoPercentualGeral, siglasGeral, vectorDict, save_path, totalDiscriminacaoEspecifica, curso):
-    for sigla, discriminacaoQtde in siglasGeral.items():
+def grafico_discriminacao_percentual(totalDiscriminacaoGeral, siglasGeral, totalDiscriminacao, vectorDict, save_path):
+    discriminacao, siglas = algoritmos.indice_discriminacao_percentual(totalDiscriminacao, vectorDict)
+
+    for sigla, discriminacaoQtde in siglas.items():
         discriminacaoTotal = sum(discriminacaoQtde)
         discriminacaoMedia = [0, 0, 0, 0, 0]
-        
         for i in range(0, len(discriminacaoQtde)):
             if (discriminacaoTotal > 0):
                 discriminacaoMedia[i] = (discriminacaoQtde[i] / discriminacaoTotal) * 100
@@ -42,26 +42,31 @@ def grafico_discriminacao_percentual(discriminacaoPercentualGeral, siglasGeral, 
         fig.suptitle("Gráfico de Tema por Discriminacao")
 
         i = 0
-        for discriminacaoParcial, num in discriminacaoPercentualGeral.items():
-            barh1 = ax.barh(discriminacaoParcial, discriminacaoMedia[i], color='tab:blue', label='Discriminação ' + str(curso))
-            ax.bar_label(barh1, fmt='{:,.0f}%')
+        for discriminacaoParcial, num in discriminacao.items():
+            barh = ax.barh(discriminacaoParcial, discriminacaoMedia[i], color='tab:blue')
+            ax.bar_label(barh, fmt='{:,.0f}%')
             i += 1
-
         ax.set_title(sigla)
 
         plt.savefig(save_path + sigla)
         plt.close()
 
     i = 0
-    for discriminacaoParcial, num in discriminacaoPercentualGeral.items():
+    for i in range(len(siglas)):
+        discriminacaoTotal = sum(siglas.items())
+        discriminacaoMedia = [0, 0, 0, 0, 0]
+        print(discriminacaoTotal)
+
+    i = 0
+    for discriminacaoParcial, num in discriminacao.items():
         discriminacaoQtdeTotal = 0
-        for siglaParcial, qtde in siglasGeral.items():
+        for siglaParcial, qtde in siglas.items():
             discriminacaoQtdeTotal += qtde[i]
 
         fig, ax = plt.subplots(figsize=(8, 5))
         fig.suptitle("Gráfico de Discriminacao por Tema")
 
-        for siglaParcial, qtde in siglasGeral.items():
+        for siglaParcial, qtde in siglas.items():
             media = 0
             if (discriminacaoQtdeTotal > 0):
                 media = (qtde[i] / discriminacaoQtdeTotal) * 100
@@ -98,8 +103,7 @@ def especifico(vectorQuest, vectorDict,
     totalDiscriminacaoQuantidadeEspecifica = []
 
     for vec in vectorQuest:
-        discriminacao, vet_ponto_bisserial = algoritmos.indice_de_discriminacao(vectorQuest, arquivo_especifico_filtrado, vec['ano'])
-        # TODO tá com erro, os dados estão incorretos
+        discriminacao, vet_ponto_bisserial = algoritmos.indice_discriminacao(vectorQuest, arquivo_especifico_filtrado, vec['ano'])
         grafico_discriminacao(vecParcialDiscriminacao, discriminacao, vec['ano'], (os.getcwd() + '/graficos/GraficosEspecificos/GraficosDiscriminacao/' + str(curso) + ' - ' + str(vec['ano'])), curso, cont)
         totalDiscriminacao['Muito Bom'] += discriminacao['Muito Bom']
         totalDiscriminacao['Bom'] += discriminacao['Bom']
@@ -107,7 +111,7 @@ def especifico(vectorQuest, vectorDict,
         totalDiscriminacao['Fraco'] += discriminacao['Fraco']
         totalDiscriminacaoQuantidadeEspecifica.append(vet_ponto_bisserial)
         cont -= 1
-    #grafico_discriminacao_percentual(discriminacaoPercentualGeral, siglasGeral, vectorDict, (os.getcwd() + '/graficos/GraficosEspecificos/GraficosDiscriminacaoPercentual/' + str(curso) + ' - ' + str(vec['ano'])), totalDiscriminacaoQuantidadeEspecifica, str(curso))
+    grafico_discriminacao_percentual(discriminacaoPercentualGeral, siglasGeral, totalDiscriminacaoQuantidadeEspecifica, vectorDict, (os.getcwd() + '/graficos/GraficosEspecificos/GraficosDiscriminacaoPercentual/' + str(curso) + ' - ' + str(vec['ano'])))
 
     # TODO finalizar a geraçao de gráficos específicos dos cursos
     #ProcessamentoGraficos.percentualAcertos(vectorQuest, vectorDict, './tabelas/dados_especificos_filtrados.csv', vec['ano'], (os.getcwd() + '/graficos/GraficosEspecificos/GraficosPercentualAcertos/' + str(curso) + ' - ' + str(vec['ano'])))

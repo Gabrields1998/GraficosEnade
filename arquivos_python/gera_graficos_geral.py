@@ -2,7 +2,7 @@ import os
 import pandas as pd
 import matplotlib.pyplot as plt
 import numpy as np
-from bin import algoritmos
+from arquivos_python import algoritmos
 
 
 def quantidadeTema(questoes, dicionario, save_path):
@@ -261,7 +261,7 @@ def facilidadePercentual(totalAcertos, vectorDict, save_path):
         plt.close()
 
 
-def grafico_de_discriminacao(vectorQuest, filename, ano: int, save_path):
+def grafico_discriminacao(vectorQuest, filename, ano: int, save_path):
     arq_filtrado = pd.read_csv(filename)
     # Recebe o arquivo filtrado com os dados
 
@@ -342,10 +342,10 @@ def grafico_de_discriminacao(vectorQuest, filename, ano: int, save_path):
     return discriminacao, vet_ponto_bisserial
 
 
-def discriminacaoPercentual(totalDiscriminacao, vectorDict, save_path):
+def grafico_discriminacao_percentual(totalDiscriminacao, vectorDict, save_path):
     siglas = {}
     for dicionario in vectorDict:
-        siglas[dicionario['sigla']] = [0, 0, 0, 0]  # Muito Bom, Bom, Medio, Fraco
+        siglas[dicionario['sigla']] = [0, 0, 0, 0] # Muito Bom, Bom, Medio, Fraco
         discriminacao = {
             'Muito Bom': 0,
             'Bom': 0,

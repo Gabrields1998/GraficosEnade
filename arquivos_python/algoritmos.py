@@ -1,7 +1,7 @@
 import pandas as pd
 import numpy as np
 
-def indice_de_discriminacao(vectorQuest, filename, ano: int):
+def indice_discriminacao(vectorQuest, filename, ano: int):
     arq_filtrado = pd.read_csv(filename)
     vet_respostas = arq_filtrado[(arq_filtrado['NU_ANO'] == ano)]
     vet_respostas = vet_respostas.reset_index(0)
@@ -66,7 +66,7 @@ def indice_de_discriminacao(vectorQuest, filename, ano: int):
 
     return discriminacao, vet_ponto_bisserial
 
-def indice_de_discriminacao_percentual(discriminacaoPercentualGeral, siglasGeral, vectorDict, save_path, totalDiscriminacaoEspecifica, curso):
+def indice_discriminacao_percentual(totalDiscriminacao, vectorDict):
     siglas = {}
     for dicionario in vectorDict:
         siglas[dicionario['sigla']] = [0, 0, 0, 0]  # Muito Bom, Bom, Medio, Fraco
@@ -77,7 +77,7 @@ def indice_de_discriminacao_percentual(discriminacaoPercentualGeral, siglasGeral
             'Fraco': 0
         }
 
-        for ano in totalDiscriminacaoEspecifica:
+        for ano in totalDiscriminacao:
             for valor in ano:
                 if (dicionario['id'] == valor[0]):
                     if (valor[1] > 0):
@@ -89,17 +89,10 @@ def indice_de_discriminacao_percentual(discriminacaoPercentualGeral, siglasGeral
                             discriminacao['Medio'] += 1
                         elif (valor[1] > 0.39):
                             discriminacao['Fraco'] += 1
-        siglas[dicionario['sigla']] = [discriminacao['Muito Bom'], discriminacao['Bom'],
-                                       discriminacao['Medio'], discriminacao['Fraco']]
+        siglas[dicionario['sigla']] = [discriminacao['Muito Bom'], discriminacao['Bom'], discriminacao['Medio'],
+                                       discriminacao['Fraco']]
 
-    for sigla, discriminacaoQtde in siglas.items():
-        discriminacaoTotal = sum(discriminacaoQtde)
-        discriminacao_media = [0, 0, 0, 0, 0]
-        for i in range(0, len(discriminacaoQtde)):
-            if (discriminacaoTotal > 0):
-                discriminacao_media[i] = (discriminacaoQtde[i] / discriminacaoTotal) * 100
-
-    return discriminacao, discriminacao_media, siglas
+        return discriminacao, siglas
 
 def obter_vetor_acertos(vetor_quest, arquivo, ano):
     arq_filtrado = pd.read_csv(arquivo)

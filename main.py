@@ -3,8 +3,8 @@ import matplotlib.pyplot as plt
 
 # TODO preparar o arquivo de pré processamento no futuro
 #import preProcessamentoBCC # USADO PARA OS ANOS < 2010
-from bin import leitor, filtra_arquivos, baixa_bases_de_dados, cria_diretorios, gera_graficos_geral, \
-    le_entrada_terminal, gera_graficos_especificos
+from arquivos_python import filtra_arquivos, gera_graficos_geral, leitor, cria_diretorios, gera_graficos_especificos, \
+    le_entrada_terminal, baixa_bases_de_dados
 
 if __name__ == '__main__':
     cria_diretorios.diretorios_graficos()
@@ -100,8 +100,7 @@ if __name__ == '__main__':
     vecParcialDiscriminacao = []
 
     for vec in vectorQuest:
-        parcialDiscriminacao, pontoBisserial = gera_graficos_geral.grafico_de_discriminacao(vectorQuest,
-                                                                                            'tabelas/dados_filtrados.csv', vec['ano'], (os.getcwd() + '/graficos/GraficosDiscriminacao/' + str(vec['ano'])))
+        parcialDiscriminacao, pontoBisserial = gera_graficos_geral.grafico_discriminacao(vectorQuest, 'tabelas/dados_filtrados.csv', vec['ano'], (os.getcwd() + '/graficos/GraficosDiscriminacao/' + str(vec['ano'])))
 
         vecParcialDiscriminacao.append(parcialDiscriminacao)
 
@@ -113,7 +112,7 @@ if __name__ == '__main__':
 
     vecParcialDiscriminacao.reverse()
 
-    discriminacaoPercentualGeral, siglasGeral = gera_graficos_geral.discriminacaoPercentual(totalDiscriminacaoQuantidade, vectorDict, (os.getcwd() + '/graficos/GraficosDiscriminacaoPercentual/'))
+    discriminacaoPercentualGeral, siglasGeral = gera_graficos_geral.grafico_discriminacao_percentual(totalDiscriminacaoQuantidade, vectorDict, (os.getcwd() + '/graficos/GraficosDiscriminacaoPercentual/'))
 
     fig, ax = plt.subplots(figsize=(8, 5))
     fig.suptitle("Indice de Discriminação Total")
